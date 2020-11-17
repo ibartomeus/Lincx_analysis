@@ -11,7 +11,7 @@ editor_options:
 This code allows reproducing all results and raw figures from the paper. We start by loading the data and functions needed.
 
 ```{r data and functions, message=FALSE, warning=FALSE}
-set.seed(1234) #to ensure reproducibility
+set.seed(1111) #to ensure reproducibility
 source('functions/toolbox.R') #set of tools and functions
 source('functions/alphantw.R') #function to plot aphas ntw
 source('functions/feasibility_domain_simplex.R') #funcion to plot triangles
@@ -27,7 +27,7 @@ First we ask if plant coexistence within trophic level changes when considering 
 
 ```{r plants, message=FALSE, warning=FALSE}
 #Calculate Omegas (feasability domain) for PLANTS ONLY:
-C <- diag(c(1,1,1), 3) # constraints -> assuming that r can be positive only
+C <- diag(c(1,1,1), 3) # constraints -> assume that r can be positive only
 ### loops are useful to eliminate numerical instabilities and allow the value to converge
 print(Omega_overlap(alpha,C)*2)
 print(Omega_overlap(alpha_no_link,C)*2)
@@ -38,13 +38,13 @@ print(Omega_overlap(alpha_link,C)*2)
 mk_graph_3sp(alphamat = alpha, rs = r/2, title = "\n No pollinators", superunname = TRUE
              , line_col = "black")
 mk_graph_3sp(alphamat = alpha_link, rs = r_link/2, title = "\n Link", superunname = TRUE
-             , line_col = "darkblue")
+             , line_col = "DodgerBlue")
 mk_graph_3sp(alphamat = alpha_no_link, rs = r_link/2, title = "\n No link", 
-             superunname = TRUE, line_col = "darkred")
+             superunname = TRUE, line_col = "darkorange")
 #B) triangles
 nopol <- print(simplex_plot(alpha, r, col = "black", line_col = "black"))
-link <- print(simplex_plot(alpha_link, r_link, col = "darkblue", line_col = "darkblue"))
-no_link <- print(simplex_plot(alpha_no_link, r_no_link, col = "darkred", line_col = "darkred"))
+link <- print(simplex_plot(alpha_link, r_link, col = "DodgerBlue", line_col = "DodgerBlue"))
+no_link <- print(simplex_plot(alpha_no_link, r_no_link, col = "darkorange", line_col = "darkorange"))
 ```
 
 Next, we ask if the full community coexistence changes for the full community
@@ -68,13 +68,60 @@ print(c(Omega_fit_analitical,probs_analitical))
 #Notice Omega's a very close... 
 
 #plot
-barplot(as.matrix(rbind(probs_link, probs_analitical, probs_no_link)), beside = TRUE, 
-        las = 2, names.arg = c("Solanum", "Raphanus", "Vicea", "Osmia", 
-                               "Bombus", "Lucilia"), ylim = c(0,1), col = c("darkblue",  
-                                                                            "orangered3",
-                                                                            "darkred")
-        #legend.text = c("no link", "link", "anal. removed")
-        )
+# barplot(as.matrix(rbind(probs_link, probs_analitical, probs_no_link)), beside = TRUE, 
+#         las = 2, names.arg = c("Solanum", "Raphanus", "Vicea", "Osmia", 
+#                                "Bombus", "Lucilia"), ylim = c(0,1), col = c("DodgerBlue",  
+#                                                                             "orangered3",
+#                                                                             "darkorange")
+#         #legend.text = c("no link", "link", "anal. removed")
+#         )
 
+plot(x = 1,                 
+     xlab = " ", ylab = "Probability",
+     xlim = c(1, 12), ylim = c(0, 1),
+     type = "n", las = 1)
+segments(x0 = c(1,3,5,7,9,11), 
+         y0 = probs_link, 
+         x1 = c(2,4,6,8,10,12), 
+         y1 = probs_analitical, 
+         col = "orangered3")
+segments(x0 = c(1,3,5,7,9,11), 
+         y0 = probs_link, 
+         x1 = c(2,4,6,8,10,12), 
+         y1 = probs_no_link, 
+         col = "darkorange")
+points(x = c(1,3,5,7,9,11), y = probs_link, pch = 16, col = "DodgerBlue")
+points(x = c(2,4,6,8,10,12), y = probs_analitical, pch = 16, col = "orangered3")
+points(x = c(2,4,6,8,10,12), y = probs_no_link, pch = 16, col = "darkorange")
+
+#in %
+change_analitical <- abs(100-(probs_analitical*100)/probs_link)
+change_nolink <- abs(100-(probs_no_link*100)/probs_link)
+plot(x = 1,                 
+     xlab = " ", ylab = "absolute effect (%)",
+     xlim = c(1, 12), ylim = c(0, 80),
+     type = "n", las = 1)
+segments(x0 = c(1,3,5,7,9,11), 
+         y0 = change_analitical, 
+         x1 = c(2,4,6,8,10,12), 
+         y1 = change_nolink, 
+         col = "grey")
+points(x = c(1,3,5,7,9,11), y = change_analitical, pch = 16, col = "orangered3")
+points(x = c(2,4,6,8,10,12), y = change_nolink, pch = 16, col = "darkorange")
+
+segments(x0 = c(1,3,5,7,9,11), 
+         y0 = c(-3,-3,-3,-3,-3,-3), 
+         x1 = c(1,3,5,7,9,11), 
+         y1 = change_analitical, 
+         col = "orangered3")
+segments(x0 = c(2,4,6,8,10,12), 
+         y0 = c(-3,-3,-3,-3,-3,-3), 
+         x1 = c(2,4,6,8,10,12), 
+         y1 = change_nolink, 
+         col = "darkorange")
+wilcox.test(change_analitical, change_nolink, paired = TRUE, alternative = "two.sided")
+mean(change_analitical)
+mean(change_nolink)
+mean(change_analitical)-mean(change_nolink) 
 ```
 
