@@ -5,5 +5,5 @@ This repo contain all analysis for the paper entitled "Experimental evidence for
 - Data can be found in the folder `data/`  
 - Functions can be found in the folder `functions/`  
 - The main scrip to reproduce the analysis is `analyisis.Rmd` and its compiled in `analysis.pdf`  
-- Script to calulate plant interaction strength is in `plant_parameters.R`  
+- Script to calulate plant interaction strength is in `plant_parameters.R`, and the null models in `reorganization_random.R`.  
 

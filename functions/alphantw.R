@@ -8,7 +8,7 @@ mk_graph_3sp <- function(alphamat, rs, title = "Species interaction network",
     }
     g <- igraph::graph_from_adjacency_matrix(alphamat != 0)
     E(g)$weight <- as.numeric(alphamat)
-    widths <- E(g)$weight * 5
+    widths <- E(g)$weight * 7
     #widths[widths > 1] <- sqrt(widths)
     if(superunname){
         plot(g,
@@ -21,12 +21,12 @@ mk_graph_3sp <- function(alphamat, rs, title = "Species interaction network",
              vertex.frame.color = "transparent",
              edge.curved = TRUE,
              edge.width = abs(widths),
-             edge.arrow.size = 0.7,
+             edge.arrow.size = 1,
              edge.arrow.mode = c(0, 2, 2,
                                  2, 0, 2,
                                  2, 2, 0),
              edge.color = line_col,
-             edge.lty = ifelse(widths > 0, 1, 3),
+             edge.lty = ifelse(widths > 0, 1, 2),
              edge.loop.angle = 0.75,
              layout = matrix(c(4, 0, 0, 0, 2, sqrt(3)/2), ncol = 2,
                              byrow = TRUE))
@@ -42,12 +42,12 @@ mk_graph_3sp <- function(alphamat, rs, title = "Species interaction network",
          vertex.frame.color = "transparent",
          edge.curved = TRUE,
          edge.width = abs(widths),
-         edge.arrow.size = 0.7,
+         edge.arrow.size = 1,
          edge.arrow.mode = c(0, 2, 2,
                              2, 0, 2,
                              2, 2, 0),
          edge.color = line_col,
-         edge.lty = ifelse(widths > 0, 1, 3),
+         edge.lty = ifelse(widths > 0, 1, 2),
          edge.loop.angle = 0.75,
          layout = matrix(c(4, 0, 0, 0, 2, sqrt(3)/2), ncol = 2,
                          byrow = TRUE))

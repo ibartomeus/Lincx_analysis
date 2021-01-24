@@ -1,6 +1,5 @@
 ---
-title: Experimental evidence for the importance of multi-trophicstructure in regulating
-  species persistence
+title: Experimental evidence for the importance of multi-trophicstructure in regulating species persistence
 author: "I. Bartomeus, S. Saavedra, R. Rohr, O. Godoy"
 output:
   pdf_document: default
@@ -23,7 +22,7 @@ if(!require(deSolve)) {install.packages("deSolve"); library(deSolve)}
 if(!require(matrixcalc)) {install.packages("matrixcalc"); library(matrixcalc)}
 ```
 
-First we ask if plant coexistence within trophic level changes when considering pollintors.
+First we ask if plant coexistence within their trophic level changes when considering pollintors.
 
 ```{r plants, message=FALSE, warning=FALSE}
 #Calculate Omegas (feasability domain) for PLANTS ONLY:
@@ -65,7 +64,7 @@ print(c(Omega_fit_no_link,probs_no_link))
 print(c(Omega_fit_link,probs_link))
 print(c(Omega_fit_analitical,probs_analitical))
 #Those are probabilities of species coexsisting.
-#Notice Omega's a very close... 
+#Notice Omega's are very close... 
 
 #plot
 # barplot(as.matrix(rbind(probs_link, probs_analitical, probs_no_link)), beside = TRUE, 
@@ -90,11 +89,11 @@ segments(x0 = c(1,3,5,7,9,11),
          x1 = c(2,4,6,8,10,12), 
          y1 = probs_no_link, 
          col = "darkorange")
-points(x = c(1,3,5,7,9,11), y = probs_link, pch = 16, col = "DodgerBlue")
-points(x = c(2,4,6,8,10,12), y = probs_analitical, pch = 16, col = "orangered3")
-points(x = c(2,4,6,8,10,12), y = probs_no_link, pch = 16, col = "darkorange")
+points(x = c(1,3,5,7,9,11), y = probs_link, pch = 17, col = "DodgerBlue")
+points(x = c(2,4,6,8,10,12), y = probs_analitical, pch = 15, col = "orangered3")
+points(x = c(2,4,6,8,10,12), y = probs_no_link, pch = 19, col = "darkorange")
 
-#in %
+#in % #Figure S3.
 change_analitical <- abs(100-(probs_analitical*100)/probs_link)
 change_nolink <- abs(100-(probs_no_link*100)/probs_link)
 plot(x = 1,                 
@@ -106,8 +105,8 @@ segments(x0 = c(1,3,5,7,9,11),
          x1 = c(2,4,6,8,10,12), 
          y1 = change_nolink, 
          col = "grey")
-points(x = c(1,3,5,7,9,11), y = change_analitical, pch = 16, col = "orangered3")
-points(x = c(2,4,6,8,10,12), y = change_nolink, pch = 16, col = "darkorange")
+points(x = c(1,3,5,7,9,11), y = change_analitical, pch = 15, col = "orangered3")
+points(x = c(2,4,6,8,10,12), y = change_nolink, pch = 19, col = "darkorange")
 
 segments(x0 = c(1,3,5,7,9,11), 
          y0 = c(-3,-3,-3,-3,-3,-3), 
@@ -123,5 +122,93 @@ wilcox.test(change_analitical, change_nolink, paired = TRUE, alternative = "two.
 mean(change_analitical)
 mean(change_nolink)
 mean(change_analitical)-mean(change_nolink) 
+```
+
+We add the null model results to see how random change affects directionality. With this, we plot Fig 3B:
+
+```{r}
+load("data/reorganization_random_nacho.RData")
+dat <- dat2
+head(dat)
+print(original_diff <- probs_no_link - probs_link) 
+print(mean_random_diff <- colMeans(dat) - probs_link) 
+
+change_analitical <- (100-(probs_analitical*100)/probs_link)
+change_nolink <- (100-(probs_no_link*100)/probs_link)
+change_null <- (100-(colMeans(dat)*100)/probs_link)
+plot(x = 1,                 
+     xlab = " ", ylab = "effect (%)",
+     xlim = c(1, 12), ylim = c(-100, 80),
+     type = "n", las = 1)
+segments(x0 = c(1,3,5,7,9,11), 
+         y0 = change_analitical, 
+         x1 = c(2,4,6,8,10,12), 
+         y1 = change_nolink, 
+         col = "grey")
+segments(x0 = c(1,3,5,7,9,11), 
+         y0 = change_analitical, 
+         x1 = c(2,4,6,8,10,12), 
+         y1 = change_null, 
+         col = "grey")
+points(x = c(1,3,5,7,9,11), y = change_analitical, pch = 15, col = "orangered3")
+points(x = c(2,4,6,8,10,12), y = change_nolink, pch = 19, col = "darkorange")
+points(x = c(2,4,6,8,10,12), y = change_null, pch = 1, col = "black")
+points(x = c(2,4,6,8,10,12), y = change_null, pch = 16, col = "lightgrey")
+# segments(x0 = c(1,3,5,7,9,11), 
+#          y0 = c(0,0,0,0,0,0), 
+#          x1 = c(1,3,5,7,9,11), 
+#          y1 = change_analitical, 
+#          col = "orangered3")
+# segments(x0 = c(2,4,6,8,10,12), 
+#          y0 = c(0,0,0,0,0,0), 
+#          x1 = c(2,4,6,8,10,12), 
+#          y1 = change_nolink, 
+#          col = "darkorange")
+# segments(x0 = c(2,4,6,8,10,12), 
+#          y0 = c(0,0,0,0,0,0), 
+#          x1 = c(2,4,6,8,10,12), 
+#          y1 = change_null, 
+#          col = "grey")
+abline(h = 0, lty = 3)
+```
+
+
+To plot Figure S3:
+
+```{r}
+#order T           R             H          O            B            F
+par(mfrow = c(2,3))
+hist(dat[,1], las = 1, main = "Tomato", xlab = "simulated")
+abline(v = probs_no_link[1], col = "grey", lwd = 3)
+abline(v = probs_link[1], col = "DodgerBlue", lty = 2, lwd = 3)
+#abline(v = probs_analitical[1], col = "green")
+abline(v = mean(dat[,1]), col = "orangered3", lwd = 3)
+hist(dat[,2], las = 1, main = "Radish", xlab = "simulated")
+abline(v = probs_no_link[2], col = "grey", lwd = 3)
+abline(v = probs_link[2], col = "DodgerBlue", lty = 2, lwd = 3)
+#abline(v = probs_analitical[2], col = "green")
+abline(v = mean(dat[,2]), col = "orangered3", lwd = 3)
+hist(dat[,3], las = 1, main = "Field Bean", xlab = "simulated")
+abline(v = probs_no_link[3], col = "grey", lwd = 3)
+abline(v = probs_link[3], col = "DodgerBlue", lty = 2, lwd = 3)
+#abline(v = probs_analitical[3], col = "green")
+abline(v = mean(dat[,3]), col = "orangered3", lwd = 3)
+hist(dat[,4], las = 1, main = "Mason bee", xlab = "simulated")
+abline(v = probs_no_link[4], col = "grey", lwd = 3)
+abline(v = probs_link[4], col = "DodgerBlue", lty = 2, lwd = 3)
+#abline(v = probs_analitical[4], col = "green")
+abline(v = mean(dat[,4]), col = "orangered3", lwd = 3)
+hist(dat[,5], las = 1, main = "Bumblebee", xlab = "simulated")
+abline(v = probs_no_link[5], col = "grey", lwd = 3)
+abline(v = probs_link[5], col = "DodgerBlue", lty = 2, lwd = 3)
+#abline(v = probs_analitical[5], col = "green")
+abline(v = mean(dat[,5]), col = "orangered3", lwd = 3)
+hist(dat[,6], las = 1, main = "Green bottle fly", xlab = "simulated")
+abline(v = probs_no_link[6], col = "grey", lwd = 3)
+abline(v = probs_link[6], col = "DodgerBlue", lty = 2, lwd = 3)
+#abline(v = probs_analitical[6], col = "green")
+abline(v = mean(dat[,6]), col = "orangered3", lwd = 3)
+par(mfrow = c(1,1))
+
 ```
 
